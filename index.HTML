@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna Navideña • Adornos que dan magia a tu Navidad</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts Festivas y Elegantes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Vinculación a hoja de estilos externa -->
+    <link rel="stylesheet" href="styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: {
+                            DEFAULT: '#9B111E',
+                            bright: '#B91C1C',
+                            dark: '#6E0A14'
+                        },
+                        pine: {
+                            DEFAULT: '#0E3B2C',
+                            light: '#16523E',
+                            dark: '#072219'
+                        },
+                        gold: {
+                            DEFAULT: '#D4AF37',
+                            bright: '#F59E0B',
+                            light: '#FDE68A'
+                        },
+                        snowcream: {
+                            DEFAULT: '#FFFBF5',
+                            warm: '#F7EFE2',
+                            card: '#FFFFFF'
+                        },
+                        cocoa: '#231815'
+                    },
+                    fontFamily: {
+                        magical: ['"Cinzel Decorative"', 'serif'],
+                        display: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-sans antialiased selection:bg-crimson selection:text-snowcream">
+
+    <!-- Lienzo continuo de copos de nieve cayendo desde arriba -->
+    <canvas id="snowfall-canvas"></canvas>
+
+    <!-- ===================================================== -->
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR (STICKY)                 -->
+    <!-- ===================================================== -->
+    <header class="sticky top-0 z-40 bg-pine/95 backdrop-blur-md text-snowcream border-b-2 border-gold/60 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo Luna Navideña con Luna y Estrella -->
+                <a href="#inicio" class="flex items-center gap-3 group">
+                    <div
+                        class="w-11 h-11 rounded-2xl bg-gradient-to-br from-crimson to-crimson-dark border-2 border-gold flex items-center justify-center shadow-md group-hover:rotate-6 transition-transform relative">
+                        <i class="ph-fill ph-moon-stars text-2xl text-gold-light twinkle-glow"></i>
+                    </div>
+                    <div>
+                        <span
+                            class="font-magical text-lg sm:text-2xl font-bold text-gold-light tracking-wide block leading-none">
+                            Luna Navideña
+                        </span>
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-snowcream/80 block mt-1">
+                            Magia Artesanal • 2026
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Enlaces Principales -->
+                <nav class="hidden lg:flex items-center gap-7 text-sm font-medium">
+                    <a href="#inicio"
+                        class="text-snowcream hover:text-gold-light transition-colors flex items-center gap-1">
+                        Inicio
+                    </a>
+                    <a href="#colecciones" class="text-snowcream hover:text-gold-light transition-colors">
+                        Colecciones
+                    </a>
+                    <a href="#ofertas"
+                        class="text-snowcream hover:text-gold-light transition-colors flex items-center gap-1.5">
+                        <span>Ofertas</span>
+                        <span
+                            class="px-1.5 py-0.5 text-[10px] font-bold bg-crimson-bright text-gold-light rounded-full border border-gold/50">-20%</span>
+                    </a>
+                    <a href="#contacto" class="text-snowcream hover:text-gold-light transition-colors">
+                        Contacto
+                    </a>
+                </nav>
+
+                <!-- Acciones Derecha: Iniciar sesión, Registrarse, Carrito, Perfil -->
+                <div class="flex items-center gap-2 sm:gap-2.5">
+                    <button id="btn-nav-login" onclick="openAuthModal('login')"
+                        class="hidden md:inline-flex px-3 py-2 text-xs font-semibold text-snowcream/90 hover:text-gold-light transition-colors">
+                        Iniciar sesión
+                    </button>
+                    <button id="btn-nav-register" onclick="openAuthModal('register')"
+                        class="hidden sm:inline-flex px-3.5 py-2 rounded-xl border border-gold/60 bg-pine-light/60 hover:bg-pine-light text-gold-light text-xs font-semibold transition-all">
+                        Registrarse
+                    </button>
+
+                    <!-- Botón Carrito (2) -->
+                    <button id="cart-header-btn" onclick="toggleCartDrawer(true)"
+                        class="relative flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl btn-christmas-red text-snowcream text-xs sm:text-sm font-bold shadow-md">
+                        <i class="ph-fill ph-shopping-cart text-base sm:text-lg text-gold-light"></i>
+                        <span>Carrito (<span id="cart-count-header">2</span>)</span>
+                    </button>
+
+                    <!-- Botón Perfil -->
+                    <button onclick="openAuthModal('profile')"
+                        class="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-gold/20 hover:bg-gold/30 border border-gold/70 text-gold-light text-xs sm:text-sm font-semibold transition-all"
+                        title="Abrir Perfil">
+                        <i class="ph-fill ph-user-circle text-lg"></i>
+                        <span id="header-profile-label" class="hidden sm:inline">Perfil</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================================================== -->
+    <!-- HERO PRINCIPAL: COLECCIÓN NAVIDAD 2026                -->
+    <!-- ===================================================== -->
+    <section id="inicio"
+        class="relative overflow-hidden bg-gradient-to-br from-pine-dark via-pine to-crimson-dark text-snowcream pt-12 pb-16 sm:pt-16 sm:pb-20 border-b-4 border-gold">
+        <!-- Resplandores decorativos de ambiente -->
+        <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-gold/15 blur-3xl pointer-events-none"></div>
+        <div
+            class="absolute bottom-0 right-0 w-[30rem] h-[30rem] rounded-full bg-crimson-bright/25 blur-3xl pointer-events-none">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+                <!-- Columna Izquierda: Copy Exacto del Tablero -->
+                <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-crimson/80 border border-gold/70 text-gold-light text-xs font-bold uppercase tracking-[0.2em] shadow-md">
+                        <i class="ph-fill ph-sparkle text-sm"></i>
+                        <span>Colección Navidad 2026</span>
+                    </div>
+
+                    <h1
+                        class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-snowcream drop-shadow">
+                        Adornos que dan <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-gold-light via-gold to-gold-bright italic">magia
+                            a tu Navidad</span>
+                    </h1>
+
+                    <p class="text-snowcream/90 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Bolas, luces, estrellas y figuras hechas a mano para decorar cada rincón de tu casa.
+                    </p>
+
+                    <!-- Botones Principales -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#favoritos"
+                            class="px-7 py-4 rounded-2xl btn-christmas-gold font-bold text-sm sm:text-base flex items-center gap-2.5 shadow-xl">
+                            <i class="ph-fill ph-bag text-lg"></i>
+                            <span>Comprar ahora</span>
+                        </a>
+                        <a href="#colecciones"
+                            class="px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/20 border-2 border-gold/60 text-snowcream font-bold text-sm sm:text-base backdrop-blur-xs transition-all flex items-center gap-2">
+                            <span>Ver colecciones</span>
+                            <i class="ph-bold ph-arrow-down"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Escaparate Fotográfico Real -->
+                <div class="lg:col-span-6">
+                    <div class="relative grid grid-cols-12 gap-4 items-center max-w-xl mx-auto">
+                        <!-- Imagen Principal: Esfera de Cristal Santa en Moto -->
+                        <div
+                            class="col-span-7 relative rounded-3xl overflow-hidden border-2 border-gold shadow-2xl bg-snowcream-warm aspect-[4/5] group">
+                            <img src="image_1956a4.jpg"
+                                onerror="this.onerror=null;this.src='https://placehold.co/600x750/9B111E/FDE68A?text=Esfera+Santa+en+Moto';"
+                                alt="Esfera de cristal navideña con Santa Claus en moto y base tejida"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-pine-dark/75 via-transparent to-transparent">
+                            </div>
+                            <div class="absolute bottom-3.5 left-3.5 right-3.5">
+                                <span
+                                    class="inline-block px-2.5 py-1 rounded-lg bg-crimson text-gold-light text-[10px] font-bold uppercase tracking-wider border border-gold/60 mb-1">
+                                    Pieza Estrella
+                                </span>
+                                <p class="font-display text-sm sm:text-base font-bold text-snowcream leading-tight">
+                                    Esfera Musical Santa en Moto
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Imagen Secundaria: Árbol Navideño Iluminado -->
+                        <div class="col-span-5 space-y-4">
+                            <div
+                                class="relative rounded-3xl overflow-hidden border-2 border-gold shadow-2xl bg-snowcream-warm aspect-[3/4] group">
+                                <img src="image_196202.jpg"
+                                    onerror="this.onerror=null;this.src='https://placehold.co/500x660/0E3B2C/FDE68A?text=Arbol+Navideno+2026';"
+                                    alt="Árbol de Navidad iluminado con gran moño rojo y esferas"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-crimson-dark/70 via-transparent to-transparent">
+                                </div>
+                                <span class="absolute bottom-3 left-3 right-3 text-xs font-bold text-gold-light">
+                                    Colección Clásica
+                                </span>
+                            </div>
+
+                            <!-- Insignia Flotante -->
+                            <div
+                                class="p-3.5 rounded-2xl bg-snowcream text-cocoa border-2 border-gold shadow-xl text-center">
+                                <div class="flex items-center justify-center gap-1 text-gold-bright text-sm mb-0.5">
+                                    <i class="ph-fill ph-star"></i>
+                                    <i class="ph-fill ph-star"></i>
+                                    <i class="ph-fill ph-star"></i>
+                                    <i class="ph-fill ph-star"></i>
+                                    <i class="ph-fill ph-star"></i>
+                                </div>
+                                <span class="font-display text-xs font-extrabold text-crimson block">
+                                    Hecho a mano • Edición 2026
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- FRANJA DE BENEFICIOS (DIRECTO DEL TABLERO)            -->
+    <!-- ===================================================== -->
+    <section class="bg-snowcream-warm border-b border-gold/40 py-6 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div
+                    class="flex items-center justify-center md:justify-start gap-3.5 bg-white/90 px-5 py-3.5 rounded-2xl border border-gold/40 shadow-xs">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-crimson/10 text-crimson flex items-center justify-center shrink-0">
+                        <i class="ph-fill ph-truck text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-pine">Envío gratis desde $50</h3>
+                        <p class="text-xs text-cocoa/70">Entrega segura a todo el país</p>
+                    </div>
+                </div>
+
+                <div
+                    class="flex items-center justify-center md:justify-start gap-3.5 bg-white/90 px-5 py-3.5 rounded-2xl border border-gold/40 shadow-xs">
+                    <div class="w-11 h-11 rounded-xl bg-pine/10 text-pine flex items-center justify-center shrink-0">
+                        <i class="ph-fill ph-hand-heart text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-pine">Hecho a mano</h3>
+                        <p class="text-xs text-cocoa/70">Piezas únicas con amor artesanal</p>
+                    </div>
+                </div>
+
+                <div
+                    class="flex items-center justify-center md:justify-start gap-3.5 bg-white/90 px-5 py-3.5 rounded-2xl border border-gold/40 shadow-xs">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-gold/20 text-crimson-dark flex items-center justify-center shrink-0">
+                        <i class="ph-fill ph-gift text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-pine">Embalaje de regalo incluido</h3>
+                        <p class="text-xs text-cocoa/70">Listo para colocar bajo tu árbol</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- SECCIÓN: LOS MÁS VENDIDOS - LOS FAVORITOS DE NAVIDAD  -->
+    <!-- ===================================================== -->
+    <main id="favoritos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-20">
+
+        <!-- Encabezado y Filtro Activo -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+                <span
+                    class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.22em] text-crimson mb-2">
+                    <i class="ph-fill ph-sparkle text-gold-bright"></i>
+                    Los más vendidos
+                </span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-pine">
+                    Los favoritos de esta Navidad
+                </h2>
+            </div>
+
+            <!-- Botones rápidos de filtro -->
+            <div class="flex flex-wrap items-center gap-2" id="filter-bar">
+                <button onclick="filterByCollection('todas')" data-col="todas"
+                    class="col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-crimson text-snowcream border border-gold shadow-xs transition-all">
+                    Todos (7)
+                </button>
+                <button onclick="filterByCollection('clasica')" data-col="clasica"
+                    class="col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-pine border border-gold/50 hover:border-crimson transition-all">
+                    Clásica • Rojo y dorado
+                </button>
+                <button onclick="filterByCollection('bosque')" data-col="bosque"
+                    class="col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-pine border border-gold/50 hover:border-crimson transition-all">
+                    Bosque • Verde y madera
+                </button>
+                <button onclick="filterByCollection('nieve')" data-col="nieve"
+                    class="col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-pine border border-gold/50 hover:border-crimson transition-all">
+                    Nieve • Blanco y plata
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid de Productos con Imágenes Reales -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+            <!-- Renderizado dinámico con JavaScript -->
+        </div>
+    </main>
+
+    <!-- ===================================================== -->
+    <!-- SECCIÓN: ELIGE TU COLECCIÓN (3 TARJETAS DEL TABLERO)  -->
+    <!-- ===================================================== -->
+    <section id="colecciones"
+        class="bg-gradient-to-b from-snowcream-warm to-snowcream py-16 border-y border-gold/40 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-[0.22em] text-crimson block mb-2">
+                    Estilos con Encanto
+                </span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-pine">
+                    Elige tu colección
+                </h2>
+                <p class="text-sm text-cocoa/75 mt-2">
+                    Haz clic en tu estilo favorito para filtrar los adornos hechos a mano que combinan con tu hogar.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Colección 1: Clásica (Rojo y dorado) -->
+                <div onclick="selectCollectionAndScroll('clasica')"
+                    class="group relative rounded-3xl overflow-hidden border-2 border-gold shadow-xl h-80 cursor-pointer">
+                    <img src="image_1965aa.jpg"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x500/9B111E/FDE68A?text=Coleccion+Clasica';"
+                        alt="Colección Clásica Rojo y dorado"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-crimson-dark/95 via-crimson-dark/35 to-transparent">
+                    </div>
+                    <div class="absolute bottom-6 left-6 right-6 text-snowcream">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-gold text-pine-dark text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                            Rojo y dorado
+                        </span>
+                        <h3 class="font-display text-3xl font-extrabold">Clásica</h3>
+                        <p class="text-xs text-snowcream/85 mt-1 flex items-center gap-1.5">
+                            <span>Ver piezas de esta colección</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Colección 2: Bosque (Verde y madera) -->
+                <div onclick="selectCollectionAndScroll('bosque')"
+                    class="group relative rounded-3xl overflow-hidden border-2 border-gold shadow-xl h-80 cursor-pointer">
+                    <img src="image_195e26.png"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x500/0E3B2C/FDE68A?text=Coleccion+Bosque';"
+                        alt="Colección Bosque Verde y madera"
+                        class="w-full h-full object-cover bg-white group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-pine-dark/95 via-pine-dark/35 to-transparent">
+                    </div>
+                    <div class="absolute bottom-6 left-6 right-6 text-snowcream">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-gold text-pine-dark text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                            Verde y madera
+                        </span>
+                        <h3 class="font-display text-3xl font-extrabold">Bosque</h3>
+                        <p class="text-xs text-snowcream/85 mt-1 flex items-center gap-1.5">
+                            <span>Ver piezas de esta colección</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Colección 3: Nieve (Blanco y plata) -->
+                <div onclick="selectCollectionAndScroll('nieve')"
+                    class="group relative rounded-3xl overflow-hidden border-2 border-gold shadow-xl h-80 cursor-pointer">
+                    <img src="image_19612f.png"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x500/1E3A5F/FFFFFF?text=Coleccion+Nieve';"
+                        alt="Colección Nieve Blanco y plata"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-pine-dark/95 via-slate-900/35 to-transparent">
+                    </div>
+                    <div class="absolute bottom-6 left-6 right-6 text-snowcream">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-white text-pine-dark text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                            Blanco y plata
+                        </span>
+                        <h3 class="font-display text-3xl font-extrabold">Nieve</h3>
+                        <p class="text-xs text-snowcream/85 mt-1 flex items-center gap-1.5">
+                            <span>Ver piezas de esta colección</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- SECCIÓN: OFERTAS ESPECIALES DE TEMPORADA              -->
+    <!-- ===================================================== -->
+    <section id="ofertas" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-20">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-crimson/10 text-crimson text-xs font-extrabold uppercase tracking-widest mb-2">
+                <i class="ph-fill ph-tag"></i> Ofertas Especiales de Temporada
+            </span>
+            <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-pine">
+                Packs Mágicos con Descuento
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Oferta 1: Farol Navideño Musical con Nieve -->
+            <div
+                class="rounded-3xl overflow-hidden bg-gradient-to-br from-crimson-dark to-crimson text-snowcream border-2 border-gold shadow-xl grid grid-cols-1 sm:grid-cols-12">
+                <div class="sm:col-span-5 h-64 sm:h-auto relative">
+                    <img src="image_195a87.png"
+                        onerror="this.onerror=null;this.src='https://placehold.co/500x500/9B111E/FDE68A?text=Farol+Navideno';"
+                        alt="Farol Navideño Musical con Nieve" class="w-full h-full object-cover">
+                    <span
+                        class="absolute top-3 left-3 px-3 py-1 rounded-full bg-gold text-pine-dark text-xs font-extrabold shadow">
+                        -20% HOY
+                    </span>
+                </div>
+                <div class="sm:col-span-7 p-6 sm:p-7 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-widest text-gold-light font-bold">
+                            Edición Luminosa • Envío Gratis
+                        </span>
+                        <h3 class="font-display text-2xl font-bold mt-1">
+                            Farol Navideño Musical con Nieve
+                        </h3>
+                        <p class="text-xs sm:text-sm text-snowcream/85 mt-2 leading-relaxed">
+                            Farol rojo de pie con escena invernal iluminada, efecto de nieve cayendo y cartel festivo
+                            Merry Christmas.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-gold/30">
+                        <div>
+                            <span class="text-xs line-through text-snowcream/60 block">$60</span>
+                            <span class="font-display text-3xl font-extrabold text-gold-light">$48</span>
+                        </div>
+                        <button onclick="addToCart(6, this)"
+                            class="px-5 py-3 rounded-xl btn-christmas-gold font-extrabold text-xs sm:text-sm flex items-center gap-2">
+                            <i class="ph-bold ph-plus"></i>
+                            <span>Añadir Oferta</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Oferta 2: Esfera de Cristal Santa en Moto -->
+            <div
+                class="rounded-3xl overflow-hidden bg-gradient-to-br from-pine-dark to-pine text-snowcream border-2 border-gold shadow-xl grid grid-cols-1 sm:grid-cols-12">
+                <div class="sm:col-span-5 h-64 sm:h-auto relative">
+                    <img src="image_1956a4.jpg"
+                        onerror="this.onerror=null;this.src='https://placehold.co/500x500/0E3B2C/FDE68A?text=Esfera+Santa+Moto';"
+                        alt="Esfera de Cristal Santa en Moto" class="w-full h-full object-cover">
+                    <span
+                        class="absolute top-3 left-3 px-3 py-1 rounded-full bg-crimson-bright text-gold-light border border-gold text-xs font-extrabold shadow">
+                        PACK REGALO
+                    </span>
+                </div>
+                <div class="sm:col-span-7 p-6 sm:p-7 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-widest text-gold-light font-bold">
+                            Bola de Nieve Musical • Base Tejida
+                        </span>
+                        <h3 class="font-display text-2xl font-bold mt-1">
+                            Esfera de Cristal Santa en Moto
+                        </h3>
+                        <p class="text-xs sm:text-sm text-snowcream/85 mt-2 leading-relaxed">
+                            Esfera de vidrio cristalino con nieve brillante, base roja de tejido artesanal con
+                            cascabeles dorados y caja de regalo.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-gold/30">
+                        <div>
+                            <span class="text-xs line-through text-snowcream/60 block">$45</span>
+                            <span class="font-display text-3xl font-extrabold text-gold-light">$36</span>
+                        </div>
+                        <button onclick="addToCart(7, this)"
+                            class="px-5 py-3 rounded-xl btn-christmas-red font-extrabold text-xs sm:text-sm flex items-center gap-2 text-snowcream">
+                            <i class="ph-bold ph-plus text-gold-light"></i>
+                            <span>Añadir Oferta</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- SECCIÓN: RESEÑAS (TEXTOS EXACTOS DEL TABLERO)         -->
+    <!-- ===================================================== -->
+    <section class="bg-snowcream-warm border-t border-gold/40 py-16 relative z-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-[0.22em] text-crimson block mb-2">
+                    Hogares Felices
+                </span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-pine">
+                    Reseñas
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Reseña 1: Ana, Lima -->
+                <div class="bg-white p-7 rounded-3xl border-2 border-gold/50 shadow-lg relative">
+                    <i class="ph-fill ph-quotes text-4xl text-gold/35 absolute top-5 right-6"></i>
+                    <div class="flex items-center gap-1 text-gold-bright text-lg mb-4">
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                    </div>
+                    <p class="font-display text-lg sm:text-xl font-semibold text-cocoa italic leading-relaxed">
+                        "Los adornos llegaron perfectos y mi árbol quedó precioso."
+                    </p>
+                    <div class="flex items-center gap-3 mt-5 pt-4 border-t border-gold/25">
+                        <div
+                            class="w-10 h-10 rounded-full bg-crimson text-gold-light font-bold flex items-center justify-center">
+                            A
+                        </div>
+                        <div>
+                            <span class="font-bold text-sm text-pine block">Ana, Lima</span>
+                            <span class="text-xs text-cocoa/60">Compra verificada • Colección Clásica</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reseña 2: Luis, Cusco -->
+                <div class="bg-white p-7 rounded-3xl border-2 border-gold/50 shadow-lg relative">
+                    <i class="ph-fill ph-quotes text-4xl text-gold/35 absolute top-5 right-6"></i>
+                    <div class="flex items-center gap-1 text-gold-bright text-lg mb-4">
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                    </div>
+                    <p class="font-display text-lg sm:text-xl font-semibold text-cocoa italic leading-relaxed">
+                        "Hechos a mano y muy bien empacados. Volveré a comprar."
+                    </p>
+                    <div class="flex items-center gap-3 mt-5 pt-4 border-t border-gold/25">
+                        <div
+                            class="w-10 h-10 rounded-full bg-pine text-gold-light font-bold flex items-center justify-center">
+                            L
+                        </div>
+                        <div>
+                            <span class="font-bold text-sm text-pine block">Luis, Cusco</span>
+                            <span class="text-xs text-cocoa/60">Compra verificada • Adornos Artesanales</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- SECCIÓN: CONTACTO Y PEDIDOS PERSONALIZADOS            -->
+    <!-- ===================================================== -->
+    <section id="contacto" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-20">
+        <div
+            class="bg-white rounded-3xl border-2 border-gold shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+            <div
+                class="lg:col-span-5 bg-gradient-to-br from-crimson-dark to-crimson text-snowcream p-8 sm:p-10 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <span
+                        class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-gold-light font-bold">
+                        <i class="ph-fill ph-envelope-open"></i> Contacto Directo
+                    </span>
+                    <h3 class="font-display text-3xl font-extrabold">
+                        ¿Buscas un adorno personalizado?
+                    </h3>
+                    <p class="text-sm text-snowcream/85 leading-relaxed">
+                        Creamos esferas con nombres pintados a mano, sets corporativos navideños y decoraciones a medida
+                        para tu hogar en todo el Perú.
+                    </p>
+                </div>
+                <div class="space-y-3 pt-8 text-xs sm:text-sm text-gold-light">
+                    <p class="flex items-center gap-2.5"><i class="ph-fill ph-map-pin text-lg"></i> Taller Artesanal
+                        Miraflores, Lima • Envíos Nacionales</p>
+                    <p class="flex items-center gap-2.5"><i class="ph-fill ph-whatsapp-logo text-lg"></i> +51 987 654
+                        321</p>
+                    <p class="flex items-center gap-2.5"><i class="ph-fill ph-envelope text-lg"></i>
+                        hola@lunanavidena.pe</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 p-8 sm:p-10">
+                <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-pine mb-1.5">Tu
+                                Nombre</label>
+                            <input type="text" required placeholder="Ej. María Fernanda"
+                                class="w-full px-4 py-3 rounded-xl bg-snowcream border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-pine mb-1.5">Correo
+                                Electrónico</label>
+                            <input type="email" required placeholder="maria@correo.com"
+                                class="w-full px-4 py-3 rounded-xl bg-snowcream border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-pine mb-1.5">¿Cómo podemos
+                            ayudarte?</label>
+                        <textarea rows="3" required
+                            placeholder="Cuéntanos qué adornos o regalos navideños deseas encargar..."
+                            class="w-full px-4 py-3 rounded-xl bg-snowcream border border-gold/60 focus:outline-none focus:border-crimson text-sm"></textarea>
+                    </div>
+                    <button type="submit"
+                        class="px-7 py-3.5 rounded-xl btn-christmas-red text-snowcream font-bold text-sm flex items-center gap-2">
+                        <i class="ph-fill ph-paper-plane-tilt text-gold-light"></i>
+                        <span>Enviar Mensaje Navideño</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- FOOTER (TEXTOS EXACTOS DE LUNA NAVIDEÑA)              -->
+    <!-- ===================================================== -->
+    <footer class="bg-pine-dark text-snowcream border-t-4 border-gold relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center space-y-4">
+            <div class="inline-flex items-center justify-center gap-2.5">
+                <i class="ph-fill ph-moon-stars text-2xl text-gold-light"></i>
+                <span class="font-magical text-2xl font-bold text-gold-light">Luna Navideña</span>
+            </div>
+            <p class="font-display text-lg sm:text-xl text-snowcream font-semibold">
+                Adornos hechos a mano para tu Navidad
+            </p>
+            <div class="flex flex-wrap justify-center gap-6 text-xs uppercase tracking-widest text-gold-light/90 pt-1">
+                <a href="#inicio" class="hover:underline">Inicio</a>
+                <a href="#colecciones" class="hover:underline">Colecciones</a>
+                <a href="#ofertas" class="hover:underline">Ofertas</a>
+                <a href="#contacto" class="hover:underline">Contacto</a>
+            </div>
+            <div class="pt-5 border-t border-gold/25 max-w-md mx-auto">
+                <p class="text-sm font-bold text-gold-light">
+                    ✨ Te desea felices fiestas Luna Navideña ✨
+                </p>
+                <p class="text-xs text-snowcream/60 mt-1">
+                    © 2026 Luna Navideña • Todos los derechos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================================================== -->
+    <!-- CARRITO LATERAL INTERACTIVO (INICIA CON 2 ARTÍCULOS)  -->
+    <!-- ===================================================== -->
+    <div id="cart-backdrop" onclick="toggleCartDrawer(false)"
+        class="fixed inset-0 bg-pine-dark/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300">
+    </div>
+
+    <aside id="cart-drawer"
+        class="fixed top-0 right-0 h-full w-full max-w-md bg-snowcream z-50 shadow-2xl border-l-4 border-gold transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
+        <!-- Cabecera del Carrito -->
+        <div class="p-5 bg-pine text-snowcream flex items-center justify-between border-b-2 border-gold">
+            <div class="flex items-center gap-3">
+                <i class="ph-fill ph-shopping-cart text-2xl text-gold-light"></i>
+                <div>
+                    <h3 class="font-display text-xl font-bold leading-none">Tu Carrito Navideño</h3>
+                    <span id="drawer-items-label" class="text-xs text-gold-light">2 artículos seleccionados</span>
+                </div>
+            </div>
+            <button onclick="toggleCartDrawer(false)"
+                class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-snowcream transition-colors"
+                aria-label="Cerrar carrito">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Barra de Progreso Envío Gratis desde $50 -->
+        <div class="px-5 py-3.5 bg-snowcream-warm border-b border-gold/40">
+            <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                <span id="free-shipping-text" class="text-pine">Agrega $50 para envío gratis</span>
+                <span id="free-shipping-pct" class="text-crimson">0%</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-gold/25 overflow-hidden">
+                <div id="free-shipping-bar"
+                    class="h-full bg-gradient-to-r from-pine to-crimson transition-all duration-300" style="width: 0%">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Productos en el Carrito -->
+        <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <!-- Se llena dinámicamente -->
+        </div>
+
+        <!-- Resumen de Pago -->
+        <div class="p-5 bg-white border-t-2 border-gold space-y-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+            <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between text-cocoa/75">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal" class="font-bold text-cocoa">$0.00</span>
+                </div>
+                <div class="flex justify-between text-cocoa/75">
+                    <span>Envío (Embalaje de regalo incluido)</span>
+                    <span id="cart-shipping" class="font-bold text-pine">$6.00</span>
+                </div>
+                <div
+                    class="flex justify-between font-display text-xl font-extrabold text-pine pt-2 border-t border-gold/40">
+                    <span>Total</span>
+                    <span id="cart-total" class="text-crimson">$0.00</span>
+                </div>
+            </div>
+
+            <button id="checkout-btn" onclick="processCheckout()"
+                class="w-full py-3.5 rounded-2xl btn-christmas-red text-snowcream font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg">
+                <i class="ph-fill ph-sparkle text-gold-light"></i>
+                <span>Finalizar Compra Navideña</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===================================================== -->
+    <!-- MODAL PERFIL / INICIAR SESIÓN / REGISTRARSE           -->
+    <!-- ===================================================== -->
+    <div id="auth-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pine-dark/75 backdrop-blur-xs">
+        <div class="bg-snowcream rounded-3xl max-w-md w-full border-2 border-gold shadow-2xl overflow-hidden">
+            <!-- Cabecera Modal -->
+            <div
+                class="p-6 bg-gradient-to-r from-pine to-crimson-dark text-snowcream flex items-center justify-between border-b-2 border-gold">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-11 h-11 rounded-2xl bg-gold/20 border border-gold flex items-center justify-center text-gold-light text-2xl">
+                        <i class="ph-fill ph-moon-stars"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-xl font-bold">Luna Navideña</h3>
+                        <p class="text-xs text-gold-light">Club de Clientes & Pedidos</p>
+                    </div>
+                </div>
+                <button onclick="closeAuthModal()" class="p-2 rounded-xl bg-white/10 hover:bg-white/25 text-snowcream">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Pestañas de Navegación del Modal -->
+            <div class="grid grid-cols-3 bg-snowcream-warm border-b border-gold/40 text-xs font-bold">
+                <button onclick="switchAuthTab('profile')" id="tab-profile"
+                    class="py-3 text-crimson border-b-2 border-crimson bg-white">
+                    Mi Perfil
+                </button>
+                <button onclick="switchAuthTab('login')" id="tab-login" class="py-3 text-cocoa/70 hover:text-crimson">
+                    Iniciar sesión
+                </button>
+                <button onclick="switchAuthTab('register')" id="tab-register"
+                    class="py-3 text-cocoa/70 hover:text-crimson">
+                    Registrarse
+                </button>
+            </div>
+
+            <!-- Cuerpo del Modal -->
+            <div id="auth-modal-body" class="p-6">
+                <!-- Inyectado dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Notificaciones Toast -->
+    <div id="toast-container"
+        class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2">
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- LÓGICA JAVASCRIPT                                    -->
+    <!-- ===================================================== -->
+    <script>
+        /* =========================================================
+           1. CATÁLOGO CON LAS 7 IMÁGENES REALES DEL USUARIO
+           ========================================================= */
+        const PRODUCTS = [
+            {
+                id: 1,
+                name: "Bola rubí brillante",
+                subtitle: "Set de 6 piezas",
+                price: 18,
+                collection: "clasica",
+                badge: "Más vendido",
+                image: "image_1965aa.jpg",
+                fallback: "https://placehold.co/500x500/9B111E/FDE68A?text=Bola+Rubi+Brillante"
+            },
+            {
+                id: 2,
+                name: "Estrella dorada",
+                subtitle: "Punta de árbol",
+                price: 24,
+                collection: "bosque",
+                badge: "Favorito",
+                image: "image_196546.png",
+                fallback: "https://placehold.co/500x500/0E3B2C/FDE68A?text=Estrella+Dorada"
+            },
+            {
+                id: 3,
+                name: "Arbolito de mesa",
+                subtitle: "Hecho a mano",
+                price: 32,
+                collection: "clasica",
+                badge: "Artesanal",
+                image: "image_196202.jpg",
+                fallback: "https://placehold.co/500x500/9B111E/FDE68A?text=Arbolito+de+Mesa"
+            },
+            {
+                id: 4,
+                name: "Muñeco de nieve",
+                subtitle: "Figura artesanal",
+                price: 28,
+                collection: "nieve",
+                badge: "Edición Nieve",
+                image: "image_19612f.png",
+                fallback: "https://placehold.co/500x500/1E3A5F/FFFFFF?text=Muneco+de+Nieve"
+            },
+            {
+                id: 5,
+                name: "Pinzas Papá Noel y Muñecos",
+                subtitle: "Set de 6 piezas",
+                price: 16,
+                collection: "bosque",
+                badge: "Madera Pintada",
+                image: "image_195e26.png",
+                fallback: "https://placehold.co/500x500/0E3B2C/FDE68A?text=Pinzas+Navidenas"
+            },
+            {
+                id: 6,
+                name: "Farol Navideño Musical con Nieve",
+                subtitle: "Edición luminosa",
+                price: 48,
+                collection: "clasica",
+                badge: "Oferta -20%",
+                image: "image_195a87.png",
+                fallback: "https://placehold.co/500x500/9B111E/FDE68A?text=Farol+Navideno"
+            },
+            {
+                id: 7,
+                name: "Esfera de Cristal Santa en Moto",
+                subtitle: "Bola de nieve musical",
+                price: 36,
+                collection: "nieve",
+                badge: "Pieza Estrella",
+                image: "image_1956a4.jpg",
+                fallback: "https://placehold.co/500x500/9B111E/FDE68A?text=Esfera+Santa+Moto"
+            }
+        ];
+
+        /* =========================================================
+           2. ESTADO DEL CARRITO (INICIA CON 2 PRODUCTOS)
+           ========================================================= */
+        let cart = [
+            { ...PRODUCTS[0], qty: 1 }, // Bola rubí brillante ($18)
+            { ...PRODUCTS[1], qty: 1 }  // Estrella dorada ($24) -> Total inicial 2 ítems ($42)
+        ];
+
+        let userState = {
+            loggedIn: true,
+            name: "Ana García",
+            email: "ana.lima@lunanavidena.pe",
+            city: "Lima, Perú",
+            orders: [
+                { id: "LN-2026-041", date: "10 Nov 2026", total: "$42.00", status: "Entregado • Embalaje Regalo" }
+            ]
+        };
+
+        let activeCollection = 'todas';
+
+        /* =========================================================
+           3. RENDERIZADO DE TARJETAS DE PRODUCTO
+           ========================================================= */
+        function renderProducts(collection = 'todas') {
+            const grid = document.getElementById('products-grid');
+            const list = collection === 'todas'
+                ? PRODUCTS
+                : PRODUCTS.filter(p => p.collection === collection);
+
+            grid.innerHTML = list.map(prod => `
+                <article class="festive-card product-card rounded-3xl overflow-hidden flex flex-col justify-between group">
+                    <div>
+                        <!-- Fotografía Real -->
+                        <div class="relative h-60 bg-snowcream-warm overflow-hidden border-b border-gold/30">
+                            <img 
+                                src="${prod.image}" 
+                                onerror="this.onerror=null;this.src='${prod.fallback}';"
+                                alt="${prod.name}" 
+                                class="card-img w-full h-full object-cover object-center"
+                            >
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-crimson/95 text-gold-light text-[11px] font-bold border border-gold/70 shadow-sm">
+                                ${prod.badge}
+                            </span>
+                            <span class="absolute bottom-3 right-3 px-2.5 py-0.5 rounded-lg bg-pine/90 text-snowcream text-[10px] font-bold uppercase tracking-wider">
+                                ${getCollectionBadge(prod.collection)}
+                            </span>
+                        </div>
+
+                        <!-- Título y Subtítulo -->
+                        <div class="p-5 pb-3">
+                            <h3 class="font-display text-xl font-bold text-pine group-hover:text-crimson transition-colors leading-snug">
+                                ${prod.name}
+                            </h3>
+                            <p class="text-xs font-medium text-cocoa/70 mt-1 flex items-center gap-1.5">
+                                <i class="ph-fill ph-sparkle text-gold-bright"></i>
+                                <span>${prod.subtitle}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Precio y Botón Añadir -->
+                    <div class="px-5 pb-5 pt-3 border-t border-gold/25 flex items-center justify-between gap-2">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-cocoa/50 block">Precio</span>
+                            <span class="font-display text-2xl font-extrabold text-crimson">$${prod.price}</span>
+                        </div>
+                        <button 
+                            onclick="addToCart(${prod.id}, this)" 
+                            class="px-4 py-2.5 rounded-xl btn-christmas-red text-snowcream text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow"
+                        >
+                            <i class="ph-bold ph-plus text-gold-light"></i>
+                            <span>Añadir</span>
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function getCollectionBadge(col) {
+            if (col === 'clasica') return 'Clásica';
+            if (col === 'bosque') return 'Bosque';
+            if (col === 'nieve') return 'Nieve';
+            return 'Navidad';
+        }
+
+        function filterByCollection(col) {
+            activeCollection = col;
+            renderProducts(col);
+
+            document.querySelectorAll('.col-filter-btn').forEach(btn => {
+                if (btn.dataset.col === col) {
+                    btn.className = "col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-crimson text-snowcream border border-gold shadow-xs transition-all";
+                } else {
+                    btn.className = "col-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-pine border border-gold/50 hover:border-crimson transition-all";
+                }
+            });
+        }
+
+        function selectCollectionAndScroll(col) {
+            filterByCollection(col);
+            document.getElementById('favoritos').scrollIntoView({ behavior: 'smooth' });
+            showToast(`Mostrando colección: ${getCollectionBadge(col)} ✨`);
+        }
+
+        /* =========================================================
+           4. ANIMACIÓN "¡PUM!" Y ACTUALIZACIÓN DEL CARRITO
+           ========================================================= */
+        function addToCart(productId, btnEl) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            triggerPumFlight(product, btnEl);
+
+            const found = cart.find(item => item.id === productId);
+            if (found) {
+                found.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`❄️ ¡PUM! "${product.name}" añadido al carrito`);
+        }
+
+        function triggerPumFlight(product, btnEl) {
+            const cartBtn = document.getElementById('cart-header-btn');
+            if (!btnEl || !cartBtn) return;
+
+            const start = btnEl.getBoundingClientRect();
+            const end = cartBtn.getBoundingClientRect();
+
+            // Destello "¡PUM!"
+            const spark = document.createElement('div');
+            spark.className = 'pum-spark';
+            spark.textContent = '❄️ ¡PUM! ❄️';
+            spark.style.left = `${start.left + start.width / 2}px`;
+            spark.style.top = `${start.top - 10}px`;
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 700);
+
+            // Miniatura real volando al botón Carrito
+            const flyImg = document.createElement('img');
+            flyImg.src = product.image;
+            flyImg.onerror = () => { flyImg.src = product.fallback; };
+            flyImg.className = 'flying-product w-12 h-12';
+            flyImg.style.left = `${start.left + start.width / 2 - 24}px`;
+            flyImg.style.top = `${start.top - 12}px`;
+            document.body.appendChild(flyImg);
+
+            requestAnimationFrame(() => {
+                flyImg.style.left = `${end.left + end.width / 2 - 14}px`;
+                flyImg.style.top = `${end.top + end.height / 2 - 14}px`;
+                flyImg.style.width = '24px';
+                flyImg.style.height = '24px';
+                flyImg.style.opacity = '0.2';
+                flyImg.style.transform = 'scale(0.4) rotate(30deg)';
+            });
+
+            setTimeout(() => {
+                flyImg.remove();
+                cartBtn.classList.remove('cart-pum-bounce');
+                void cartBtn.offsetWidth;
+                cartBtn.classList.add('cart-pum-bounce');
+            }, 720);
+        }
+
+        function changeQty(productId, delta) {
+            const index = cart.findIndex(i => i.id === productId);
+            if (index === -1) return;
+
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function removeCartItem(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const headerCount = document.getElementById('cart-count-header');
+            const drawerLabel = document.getElementById('drawer-items-label');
+            const listContainer = document.getElementById('cart-items-list');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const shippingEl = document.getElementById('cart-shipping');
+            const totalEl = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const freeLimit = 50;
+            const isFree = subtotal >= freeLimit;
+            const shipping = subtotal === 0 ? 0 : (isFree ? 0 : 6.00);
+            const finalTotal = subtotal + shipping;
+
+            headerCount.textContent = totalItems;
+            drawerLabel.textContent = `${totalItems} ${totalItems === 1 ? 'artículo seleccionado' : 'artículos seleccionados'}`;
+
+            // Progreso envío gratis desde $50
+            const pct = Math.min(100, Math.round((subtotal / freeLimit) * 100));
+            document.getElementById('free-shipping-bar').style.width = `${pct}%`;
+            document.getElementById('free-shipping-pct').textContent = `${pct}%`;
+
+            const freeText = document.getElementById('free-shipping-text');
+            if (isFree) {
+                freeText.innerHTML = '🎄 ¡Felicidades! Tienes <strong>Envío Gratis</strong>';
+            } else {
+                const rest = (freeLimit - subtotal).toFixed(2);
+                freeText.innerHTML = `Agrega <strong>$${rest}</strong> más para <strong>Envío Gratis</strong>`;
+            }
+
+            if (cart.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center py-12 px-4">
+                        <div class="w-16 h-16 rounded-2xl bg-crimson/10 text-crimson flex items-center justify-center text-3xl mb-4">
+                            <i class="ph-fill ph-snowflake"></i>
+                        </div>
+                        <h4 class="font-display text-2xl font-bold text-pine">Tu carrito está vacío</h4>
+                        <p class="text-xs text-cocoa/70 mt-1.5 max-w-xs">
+                            Explora nuestros adornos hechos a mano y haz clic en “Añadir” para llenar tu casa de magia.
+                        </p>
+                        <button onclick="toggleCartDrawer(false)" class="mt-5 px-5 py-2.5 rounded-xl btn-christmas-gold font-bold text-xs">
+                            Ver Adornos Navideños
+                        </button>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+                checkoutBtn.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                listContainer.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white border border-gold/50 shadow-xs">
+                        <img 
+                            src="${item.image}" 
+                            onerror="this.onerror=null;this.src='${item.fallback}';"
+                            alt="${item.name}" 
+                            class="w-16 h-16 rounded-xl object-cover border border-gold/40 shrink-0"
+                        >
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-display font-bold text-sm text-pine truncate">${item.name}</h4>
+                            <span class="text-xs font-extrabold text-crimson">$${(item.price * item.qty).toFixed(2)}</span>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="changeQty(${item.id}, -1)" class="w-7 h-7 rounded-lg bg-snowcream-warm hover:bg-gold/30 border border-gold/50 text-pine font-bold flex items-center justify-center">
+                                    −
+                                </button>
+                                <span class="text-xs font-extrabold w-5 text-center">${item.qty}</span>
+                                <button onclick="changeQty(${item.id}, 1)" class="w-7 h-7 rounded-lg bg-snowcream-warm hover:bg-gold/30 border border-gold/50 text-pine font-bold flex items-center justify-center">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="removeCartItem(${item.id})" class="p-2 text-cocoa/45 hover:text-crimson transition-colors" title="Quitar">
+                            <i class="ph-bold ph-trash text-lg"></i>
+                        </button>
+                    </div>
+                `).join('');
+                checkoutBtn.disabled = false;
+                checkoutBtn.classList.remove('opacity-50', 'pointer-events-none');
+            }
+
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            shippingEl.textContent = subtotal === 0 ? '$0.00' : (isFree ? 'GRATIS ✨' : `$${shipping.toFixed(2)}`);
+            totalEl.textContent = `$${finalTotal.toFixed(2)}`;
+        }
+
+        function toggleCartDrawer(open) {
+            const backdrop = document.getElementById('cart-backdrop');
+            const drawer = document.getElementById('cart-drawer');
+
+            if (open) {
+                backdrop.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    backdrop.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-x-full');
+                });
+            } else {
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        function processCheckout() {
+            if (cart.length === 0) return;
+            const totalPaid = document.getElementById('cart-total').textContent;
+            const orderCode = `LN-2026-${Math.floor(100 + Math.random() * 899)}`;
+
+            if (userState.loggedIn) {
+                userState.orders.unshift({
+                    id: orderCode,
+                    date: "Hoy • Navidad 2026",
+                    total: totalPaid,
+                    status: "Preparando Embalaje Regalo 🎁"
+                });
+            }
+
+            cart = [];
+            updateCartUI();
+
+            const listContainer = document.getElementById('cart-items-list');
+            listContainer.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-center py-10 px-4 space-y-3">
+                    <div class="w-16 h-16 rounded-full bg-pine text-gold-light border-2 border-gold flex items-center justify-center text-3xl shadow-lg">
+                        🎄
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-crimson/10 text-crimson text-xs font-extrabold">
+                        Pedido ${orderCode}
+                    </span>
+                    <h4 class="font-display text-2xl font-extrabold text-pine">
+                        ¡Gracias por tu compra!
+                    </h4>
+                    <p class="text-xs sm:text-sm text-cocoa/80 leading-relaxed">
+                        Tu pedido por <strong class="text-crimson">${totalPaid}</strong> incluye embalaje de regalo artesanal. ¡Te desea felices fiestas <strong>Luna Navideña</strong>!
+                    </p>
+                    <button onclick="toggleCartDrawer(false)" class="mt-3 px-6 py-3 rounded-xl btn-christmas-gold font-bold text-xs">
+                        Seguir Explorando
+                    </button>
+                </div>
+            `;
+        }
+
+        /* =========================================================
+           5. MODAL DE PERFIL / INICIAR SESIÓN / REGISTRARSE
+           ========================================================= */
+        function openAuthModal(tab = 'profile') {
+            const modal = document.getElementById('auth-modal');
+            switchAuthTab(tab);
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function switchAuthTab(tab) {
+            ['profile', 'login', 'register'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    btn.className = "py-3 text-crimson border-b-2 border-crimson bg-white font-extrabold";
+                } else {
+                    btn.className = "py-3 text-cocoa/70 hover:text-crimson font-semibold";
+                }
+            });
+
+            const body = document.getElementById('auth-modal-body');
+
+            if (tab === 'profile') {
+                if (userState.loggedIn) {
+                    body.innerHTML = `
+                        <div class="space-y-5">
+                            <div class="p-4 rounded-2xl bg-gradient-to-r from-pine to-pine-light text-snowcream border border-gold flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-gold text-pine-dark font-display font-extrabold text-xl flex items-center justify-center">
+                                        ${userState.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-display font-bold text-lg">${userState.name}</h4>
+                                        <p class="text-xs text-gold-light">${userState.email}</p>
+                                        <span class="text-[11px] text-snowcream/80 block mt-0.5">📍 ${userState.city}</span>
+                                    </div>
+                                </div>
+                                <button onclick="logoutUser()" class="text-xs font-bold text-gold-light underline hover:text-white">
+                                    Salir
+                                </button>
+                            </div>
+
+                            <div>
+                                <h5 class="text-xs font-extrabold uppercase tracking-wider text-pine mb-2">
+                                    Mis Pedidos Navideños (${userState.orders.length})
+                                </h5>
+                                <div class="space-y-2 max-h-40 overflow-y-auto">
+                                    ${userState.orders.map(o => `
+                                        <div class="p-3 rounded-xl bg-white border border-gold/40 flex items-center justify-between text-xs">
+                                            <div>
+                                                <span class="font-bold text-pine">${o.id}</span>
+                                                <span class="text-cocoa/60 block">${o.date}</span>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="font-extrabold text-crimson block">${o.total}</span>
+                                                <span class="text-[11px] text-pine font-semibold">${o.status}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    body.innerHTML = `
+                        <div class="text-center py-6 space-y-4">
+                            <p class="text-sm text-cocoa/80">Aún no has iniciado sesión en tu cuenta de <strong>Luna Navideña</strong>.</p>
+                            <div class="flex justify-center gap-3">
+                                <button onclick="switchAuthTab('login')" class="px-5 py-2.5 rounded-xl btn-christmas-red text-snowcream text-xs font-bold">
+                                    Iniciar sesión
+                                </button>
+                                <button onclick="switchAuthTab('register')" class="px-5 py-2.5 rounded-xl btn-christmas-gold text-xs font-bold">
+                                    Registrarse
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (tab === 'login') {
+                body.innerHTML = `
+                    <form onsubmit="submitLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-pine mb-1">Correo Electrónico</label>
+                            <input type="email" id="login-email" required placeholder="tu@correo.com" class="w-full px-4 py-3 rounded-xl bg-white border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-pine mb-1">Contraseña</label>
+                            <input type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-white border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <button type="submit" class="w-full py-3.5 rounded-xl btn-christmas-red text-snowcream font-bold text-sm">
+                            Entrar a Luna Navideña ✨
+                        </button>
+                    </form>
+                `;
+            } else if (tab === 'register') {
+                body.innerHTML = `
+                    <form onsubmit="submitRegister(event)" class="space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-pine mb-1">Nombre Completo</label>
+                            <input type="text" id="reg-name" required placeholder="Ej. Luis Mendoza" class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-pine mb-1">Correo Electrónico</label>
+                            <input type="email" id="reg-email" required placeholder="luis@correo.com" class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-pine mb-1">Ciudad (Perú)</label>
+                            <input type="text" id="reg-city" required placeholder="Ej. Cusco / Lima / Arequipa" class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/60 focus:outline-none focus:border-crimson text-sm">
+                        </div>
+                        <button type="submit" class="w-full py-3.5 rounded-xl btn-christmas-gold font-extrabold text-sm">
+                            Crear Cuenta Navideña 🎄
+                        </button>
+                    </form>
+                `;
+            }
+        }
+
+        function submitLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            userState.loggedIn = true;
+            userState.email = email;
+            userState.name = email.split('@')[0].replace('.', ' ');
+            userState.name = userState.name.charAt(0).toUpperCase() + userState.name.slice(1);
+            updateProfileHeader();
+            switchAuthTab('profile');
+            showToast(`¡Bienvenido de vuelta, ${userState.name}! ❄️`);
+        }
+
+        function submitRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const city = document.getElementById('reg-city').value.trim();
+            userState = {
+                loggedIn: true,
+                name,
+                email,
+                city,
+                orders: [{ id: "LN-BIENVENIDA", date: "Hoy", total: "$0.00", status: "Embalaje Regalo Gratis 🎁" }]
+            };
+            updateProfileHeader();
+            switchAuthTab('profile');
+            showToast(`¡Cuenta creada! Felices fiestas, ${name} ✨`);
+        }
+
+        function logoutUser() {
+            userState.loggedIn = false;
+            updateProfileHeader();
+            switchAuthTab('profile');
+        }
+
+        function updateProfileHeader() {
+            const label = document.getElementById('header-profile-label');
+            label.textContent = userState.loggedIn ? userState.name.split(' ')[0] : 'Perfil';
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            e.target.reset();
+            showToast('✉️ ¡Mensaje enviado! Nuestro taller te responderá muy pronto.');
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'px-5 py-3 rounded-2xl bg-pine-dark text-snowcream border-2 border-gold shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transform translate-y-4 opacity-0 transition-all duration-300';
+            toast.innerHTML = `<i class="ph-fill ph-snowflake text-gold-light text-base"></i><span>${msg}</span>`;
+            box.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.remove('translate-y-4', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 2600);
+        }
+
+        /* =========================================================
+           6. LLUVIA CONTINUA DE COPOS DE NIEVE + RASTRO EN CURSOR
+           ========================================================= */
+        function initSnowfallAndCursorTrail() {
+            const canvas = document.getElementById('snowfall-canvas');
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+
+            // Copos de nieve detallados cayendo desde arriba
+            const snowflakes = Array.from({ length: 65 }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                size: Math.random() * 7 + 4,
+                speedY: Math.random() * 1.1 + 0.45,
+                speedX: Math.random() * 0.6 - 0.3,
+                angle: Math.random() * Math.PI * 2,
+                spin: (Math.random() - 0.5) * 0.025,
+                opacity: Math.random() * 0.55 + 0.35,
+                isGold: Math.random() > 0.72
+            }));
+
+            function drawSnowflakeShape(x, y, radius, angle, color, alpha) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                ctx.strokeStyle = color;
+                ctx.globalAlpha = alpha;
+                ctx.lineWidth = 1.4;
+                ctx.lineCap = 'round';
+
+                for (let i = 0; i < 6; i++) {
+                    ctx.rotate(Math.PI / 3);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -radius);
+                    // Ramitas cristalinas del copo
+                    ctx.moveTo(0, -radius * 0.55);
+                    ctx.lineTo(-radius * 0.28, -radius * 0.8);
+                    ctx.moveTo(0, -radius * 0.55);
+                    ctx.lineTo(radius * 0.28, -radius * 0.8);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            function animateSnow() {
+                ctx.clearRect(0, 0, w, h);
+                for (const s of snowflakes) {
+                    const color = s.isGold ? '#D4AF37' : '#FFFFFF';
+                    drawSnowflakeShape(s.x, s.y, s.size, s.angle, color, s.opacity);
+
+                    s.y += s.speedY;
+                    s.x += s.speedX + Math.sin(s.y * 0.012) * 0.35;
+                    s.angle += s.spin;
+
+                    if (s.y > h + 12) {
+                        s.y = -12;
+                        s.x = Math.random() * w;
+                    }
+                    if (s.x > w + 12) s.x = -12;
+                    if (s.x < -12) s.x = w + 12;
+                }
+                requestAnimationFrame(animateSnow);
+            }
+            animateSnow();
+
+            // Rastro mágico de mini-copos al mover el puntero
+            let lastTrailTime = 0;
+            window.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastTrailTime < 55) return;
+                lastTrailTime = now;
+
+                const flake = document.createElement('span');
+                flake.className = 'cursor-trail-flake';
+                flake.textContent = Math.random() > 0.4 ? '❄' : '✦';
+                flake.style.left = `${e.clientX}px`;
+                flake.style.top = `${e.clientY}px`;
+                flake.style.fontSize = `${Math.random() * 8 + 10}px`;
+                flake.style.color = Math.random() > 0.45 ? '#D4AF37' : '#9B111E';
+                document.body.appendChild(flake);
+
+                setTimeout(() => flake.remove(), 850);
+            });
+        }
+
+        window.onload = function () {
+            renderProducts('todas');
+            updateCartUI();
+            updateProfileHeader();
+            initSnowfallAndCursorTrail();
+        };
+    </script>
+</body>
+
+</html>
